@@ -1,0 +1,20 @@
+﻿# Reproducibility
+
+## Data assumptions
+- DEDDIAG is primary appliance trace backbone.
+- If unavailable, synthetic fallback traces are generated and tagged as `source=synthetic`.
+- Price stream is generated reproducibly from fixed seed unless external tariff stream is provided.
+
+## Experiment reproducibility
+- Scenario configs in `experiments/configs/*.yaml`
+- Reward weights in `experiments/configs/reward_weights.yaml`
+- Training logs in `experiments/outputs/logs`
+- Evaluation exports in CSV/Parquet/JSON
+
+## Suggested protocol
+1. Freeze config snapshot.
+2. Run replay baseline.
+3. Train PPO with fixed seed.
+4. Evaluate against baseline agents.
+5. Export outputs and figures.
+6. Publish dataset/model artifacts.
