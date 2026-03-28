@@ -1,6 +1,6 @@
 ﻿from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 
 from core.agents.agent_explainer import AgentExplainer, DecisionExplanation
 from core.agents.agent_memory import AgentMemory
@@ -54,6 +54,6 @@ class HouseAgent:
             "utility_score": decision.utility_score,
             "reason": decision.reason_tag,
             "reward": reward,
-            "explanation": explanation.__dict__,
+            "explanation": asdict(explanation),
             "trend": self.memory.price_trend(),
         }

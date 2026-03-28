@@ -1,0 +1,4 @@
+# Optional RL/Hugging Face extras (Python 3.10+)
+torch==2.5.1
+huggingface_hub==0.34.4
+datasets==4.0.0

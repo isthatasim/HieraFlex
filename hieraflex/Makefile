@@ -1,10 +1,13 @@
-.PHONY: bootstrap bootstrap-frontend install dev test lint format run-backend run-frontend demo train evaluate export
+.PHONY: bootstrap bootstrap-optional bootstrap-frontend install dev test lint format run-backend run-frontend demo train evaluate export
 
 install:
 	python scripts/bootstrap.py
 
 bootstrap:
 	python scripts/bootstrap.py
+
+bootstrap-optional:
+	python scripts/bootstrap.py --with-optional
 
 bootstrap-frontend:
 	python scripts/bootstrap.py --with-frontend

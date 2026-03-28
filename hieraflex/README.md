@@ -73,10 +73,14 @@ Includes:
 
 ## Installation
 
+Python: `3.10+` (recommended `3.11`)
+
 ```bash
 cd hieraflex
 python scripts/bootstrap.py
 ```
+
+On Windows, if your default `python` is older, bootstrap automatically uses `py -3.11` when available.
 
 Optional frontend:
 
@@ -84,7 +88,13 @@ Optional frontend:
 python scripts/bootstrap.py --with-frontend
 ```
 
-Deterministic lock file: `requirements-lock.txt`
+Optional RL/Hugging Face extras:
+
+```bash
+python scripts/bootstrap.py --with-optional
+```
+
+Deterministic lock files: `requirements-lock.txt`, `requirements-lock-optional.txt`
 
 ## Local Run
 

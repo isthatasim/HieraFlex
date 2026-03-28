@@ -1,7 +1,7 @@
 ﻿from __future__ import annotations
 
 import statistics
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 
 from core.market.peer_matching import MatchedTrade
 
@@ -32,6 +32,6 @@ class ClearingEngine:
         return ClearingResult(
             local_clearing_price=local_price,
             matched_kwh=matched_kwh,
-            trades=[t.__dict__ for t in trades],
+            trades=[asdict(t) for t in trades],
             fairness_penalty=fairness_penalty,
         )

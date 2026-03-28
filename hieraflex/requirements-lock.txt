@@ -1,29 +1,22 @@
-# Core runtime
+# Core runtime (Python 3.10+)
 fastapi==0.115.14
-uvicorn[standard]==0.35.0
-pydantic==2.11.7
-pydantic-settings==2.10.1
-orjson==3.11.2
+uvicorn[standard]==0.33.0
+pydantic==2.10.6
+pydantic-settings==2.7.1
+orjson==3.10.15
 httpx==0.28.1
 python-dateutil==2.9.0.post0
 pyyaml==6.0.2
 
-# Numeric/data stack (pinned to avoid NumPy 2.x ABI issues)
+# Numeric/data stack
 numpy==1.26.4
 pandas==2.2.2
-pyarrow==15.0.2
+pyarrow==17.0.0
 
 # Visualization
 matplotlib==3.9.0
 seaborn==0.13.2
 
-# RL
-torch==2.5.1
-
-# Hugging Face deployment helpers
-huggingface_hub==0.34.4
-datasets==4.0.0
-
 # Tests
-pytest==8.4.1
-pytest-asyncio==1.1.0
+pytest==8.3.2
+pytest-asyncio==0.24.0
