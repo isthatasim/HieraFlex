@@ -1,0 +1,6 @@
+﻿extends: community.yaml
+environment:
+  houses: 6
+  horizon: 288
+training:
+  episodes: 15

@@ -1,0 +1,6 @@
+﻿extends: base.yaml
+environment:
+  houses: 1
+  horizon: 288
+training:
+  episodes: 30

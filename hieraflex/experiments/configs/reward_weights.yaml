@@ -1,0 +1,10 @@
+﻿alpha_1_energy: 1.0
+alpha_2_peak: 0.4
+alpha_3_comfort: 0.5
+alpha_4_switch: 0.2
+alpha_5_deadline: 1.2
+alpha_6_violation: 2.0
+alpha_7_trade: 0.5
+alpha_8_self: 0.2
+alpha_9_flex: 0.3
+alpha_10_resp: 0.2

@@ -1,0 +1,36 @@
+﻿project:
+  name: HieraFlex
+  mode: research
+
+environment:
+  houses: 4
+  horizon: 288
+  step_minutes: 5
+  replay_speed: 60
+
+features:
+  include_price_history: true
+  include_trade_signal: true
+  include_der: true
+
+training:
+  episodes: 20
+  batch_size: 256
+  gamma: 0.99
+  lr: 0.001
+
+market:
+  mode: hybrid
+  fairness: jain
+  community_peak_cap_kw: 25.0
+
+weights:
+  lambda_peak: 1.0
+  lambda_comfort: 1.0
+  lambda_switch: 0.2
+  lambda_deadline: 1.2
+  lambda_violation: 2.0
+  lambda_fair: 0.5
+  lambda_resp: 0.6
+  lambda_trade: 0.8
+  lambda_self: 0.5

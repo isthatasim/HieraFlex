@@ -1,0 +1,5 @@
+﻿extends: base.yaml
+market:
+  mode: real_time
+features:
+  include_price_history: true

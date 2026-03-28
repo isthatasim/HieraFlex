@@ -1,0 +1,8 @@
+﻿extends: base.yaml
+environment:
+  houses: 4
+  horizon: 288
+training:
+  episodes: 20
+market:
+  mode: local_market
