@@ -2,6 +2,7 @@
 
 ## Data assumptions
 - DEDDIAG is primary appliance trace backbone.
+- Reference alignment: DEDDIAG loader metadata indicates multi-home, long-duration, high-frequency appliance traces with event annotations; HieraFlex preserves that measured appliance structure.
 - If unavailable, synthetic fallback traces are generated and tagged as `source=synthetic`.
 - Price stream is generated reproducibly from fixed seed unless external tariff stream is provided.
 

@@ -17,6 +17,10 @@ HieraFlex is a research-grade, hierarchical, agentic AI platform for pseudo-real
 - React frontend with hierarchical drill-down dashboards
 - Hugging Face support for dataset/model/Space publication (optional)
 
+## DEDDIAG Backbone Assumptions
+
+HieraFlex ingestion is aligned with the DEDDIAG loader ecosystem assumptions: appliance-level traces across multiple homes, long-horizon household recordings, and event-style appliance annotations. The loader in `data/loaders/deddiag_adapter.py` preserves measured appliance traces when present and only adds clearly tagged synthetic signals (`source=synthetic`) when required for missing exogenous variables (e.g., tariff, DER, market fields).
+
 ## Repository Structure
 
 ```text
