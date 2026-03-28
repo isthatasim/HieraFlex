@@ -1,7 +1,13 @@
-﻿.PHONY: install dev test lint format run-backend run-frontend demo train evaluate export
+.PHONY: bootstrap bootstrap-frontend install dev test lint format run-backend run-frontend demo train evaluate export
 
 install:
-	python -m pip install -e .[test,rl]
+	python scripts/bootstrap.py
+
+bootstrap:
+	python scripts/bootstrap.py
+
+bootstrap-frontend:
+	python scripts/bootstrap.py --with-frontend
 
 run-backend:
 	uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload

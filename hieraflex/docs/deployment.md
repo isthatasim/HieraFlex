@@ -4,7 +4,7 @@
 
 ```bash
 cd hieraflex
-python -m pip install -e .[test,rl]
+python scripts/bootstrap.py
 uvicorn backend.app.main:app --host 0.0.0.0 --port 8000
 ```
 

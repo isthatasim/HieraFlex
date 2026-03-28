@@ -11,6 +11,8 @@
 - Reward weights in `experiments/configs/reward_weights.yaml`
 - Training logs in `experiments/outputs/logs`
 - Evaluation exports in CSV/Parquet/JSON
+- Deterministic dependency lock in `requirements-lock.txt`
+- One-command environment bootstrap via `python scripts/bootstrap.py`
 
 ## Suggested protocol
 1. Freeze config snapshot.

@@ -75,15 +75,16 @@ Includes:
 
 ```bash
 cd hieraflex
-python -m pip install -e .[test,rl]
+python scripts/bootstrap.py
 ```
 
 Optional frontend:
 
 ```bash
-cd frontend
-npm install
+python scripts/bootstrap.py --with-frontend
 ```
+
+Deterministic lock file: `requirements-lock.txt`
 
 ## Local Run
 
@@ -217,6 +218,12 @@ pytest -q
 ```
 
 Coverage includes data loading, replay engine, market engine, house agent loop, API routes, RL env, and deployment config checks.
+
+If you need to rebuild a clean environment, rerun:
+
+```bash
+python scripts/bootstrap.py
+```
 
 ## Research Positioning
 
