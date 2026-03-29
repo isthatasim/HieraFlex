@@ -1,4 +1,4 @@
-﻿services:
+services:
   backend:
     build:
       context: .
@@ -9,6 +9,21 @@
       - "8000:8000"
     env_file:
       - .env
+    volumes:
+      - ./:/workspace/hieraflex
+
+  training-worker:
+    build:
+      context: .
+      dockerfile: deploy/huggingface/Dockerfile
+    command: python -m backend.app.worker_daemon
+    working_dir: /workspace/hieraflex
+    env_file:
+      - .env
+    volumes:
+      - ./:/workspace/hieraflex
+    depends_on:
+      - backend
 
   frontend:
     image: node:20-alpine

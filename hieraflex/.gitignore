@@ -17,5 +17,7 @@ experiments/outputs/figures/*
 !experiments/outputs/figures/.gitkeep
 experiments/outputs/models/*
 !experiments/outputs/models/.gitkeep
+experiments/outputs/json/*
+!experiments/outputs/json/.gitkeep
 experiments/outputs/logs/*
 !experiments/outputs/logs/.gitkeep

@@ -1,4 +1,4 @@
-.PHONY: bootstrap bootstrap-optional bootstrap-frontend install dev test lint format run-backend run-frontend demo train evaluate export
+.PHONY: bootstrap bootstrap-optional bootstrap-frontend install dev prod test lint format run-backend run-frontend run-worker demo train evaluate export
 
 install:
 	python scripts/bootstrap.py
@@ -21,11 +21,17 @@ run-frontend:
 dev:
 	docker compose up --build
 
+prod:
+	docker compose -f deploy/production/docker-compose.prod.yml up --build
+
 test:
 	pytest -q
 
 train:
 	python -m rl.training.train_single_house --config experiments/configs/single_house.yaml
+
+run-worker:
+	python -m backend.app.worker_daemon
 
 evaluate:
 	python -m rl.evaluation.compare_agents --config experiments/configs/community.yaml

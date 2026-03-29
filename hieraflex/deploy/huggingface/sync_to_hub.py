@@ -33,6 +33,7 @@ def main() -> None:
     run(["hf", "auth", "login", "--token", token])
     run(["python", "deploy/huggingface/publish_dataset.py", "--source", args.dataset_dir, "--repo", dataset_repo])
     run(["python", "deploy/huggingface/publish_model.py", "--source", args.model_dir, "--repo", model_repo])
+    run(["python", "deploy/huggingface/publish_results.py", "--source", "experiments/outputs/json", "--repo", dataset_repo])
     run(["python", "deploy/huggingface/publish_space.py", "--source", args.space_dir, "--repo", space_repo])
 
 
