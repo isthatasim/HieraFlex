@@ -16,6 +16,10 @@ Observe/reason/plan/act loops, market clearing, and replay synchronization run l
 
 ## Space publishing
 `deploy/huggingface/publish_space.py` uploads Docker Space package.
+The Space image now builds frontend assets and serves the demo UI at `/ui` while keeping API endpoints available.
+
+## Results publishing
+`deploy/huggingface/publish_results.py` uploads tracked JSON/JSONL outputs for run comparison and reproducibility.
 
 ## Optional remote inference
 Can be enabled only for demo/benchmark mode, not required for core control.

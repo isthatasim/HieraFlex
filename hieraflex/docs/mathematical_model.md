@@ -60,3 +60,27 @@ a_t =
 \text{keep}, & \text{otherwise}
 \end{cases}
 \]
+
+## Long-horizon training objective
+
+For checkpointed training over episodes \(e \in \mathcal{E}_{train}\):
+\[
+\max_{\theta}\; \mathbb{E}_{e \sim \mathcal{E}_{train}} \left[\sum_{t=0}^{T_e-1}\gamma^t r_{e,t}\right]
+\]
+
+Checkpoint selection score (default):
+\[
+\text{Score}(\theta_k)=\frac{1}{|\mathcal{E}_{eval}|}\sum_{e\in\mathcal{E}_{eval}} G_e(\theta_k)
+\]
+\[
+\theta^\*=\arg\max_{\theta_k \in \mathcal{C}} \text{Score}(\theta_k)
+\]
+
+## Online control mapping
+
+Each replay step implements:
+\[
+\text{Observe} \rightarrow \text{Reason} \rightarrow \text{Plan} \rightarrow \text{Act} \rightarrow \text{Reflect}
+\]
+
+where feasible action set \(\mathcal{A}_{h,t}^{feasible}\) is filtered by appliance integrity, SOC limits, and power-cap constraints before dispatch.

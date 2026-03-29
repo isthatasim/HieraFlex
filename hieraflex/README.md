@@ -1,251 +1,197 @@
-﻿# HieraFlex
+# HieraFlex
 
 **Hierarchical Flexibility Intelligence for Community Energy Trading**
 
-HieraFlex is a research-grade, hierarchical, agentic AI platform for pseudo-real-time community energy trading and appliance-level load management. It replays DEDDIAG-style appliance traces as live streams, runs autonomous house agents continuously against dynamic prices, coordinates local trading at community level, and exposes explainable decisions from community down to appliance level.
+HieraFlex is a research-grade hierarchical agentic AI platform for community energy coordination with pseudo-real-time replay, house-level autonomy, market-aware control, and production-style web deployment.
 
-## Core Capabilities
+## What This Stage Adds
 
-- Hierarchical control stack (community -> house -> appliance/resource)
-- Continuous observe/reason/plan/act loops per house
-- Price-responsive scheduling and re-planning during replay
-- Pseudo-real-time event replay with pause/resume/reset/seek/speed
-- Local market engine with bids/offers, matching, and local clearing
-- Baselines: no-control, rule-based, cheapest-slot, PPO
-- Evaluation pipeline with cost, PAR, fairness, trading, responsiveness metrics
-- FastAPI backend + WebSocket live channels
-- React frontend with hierarchical drill-down dashboards
-- Hugging Face support for dataset/model/Space publication (optional)
+- Live website deployment path (frontend + backend + worker split)
+- Long-running PPO training jobs decoupled from the browser
+- Resumable checkpoints with latest/best pointers
+- Run registry + experiment tracking (JSON/JSONL)
+- Training control and run comparison from UI
+- Resource-level visual overlays (load, price, action context)
+- Production and Hugging Face artifact publication flows
 
-## DEDDIAG Backbone Assumptions
+## Architecture
 
-HieraFlex ingestion is aligned with the DEDDIAG loader ecosystem assumptions: appliance-level traces across multiple homes, long-horizon household recordings, and event-style appliance annotations. The loader in `data/loaders/deddiag_adapter.py` preserves measured appliance traces when present and only adds clearly tagged synthetic signals (`source=synthetic`) when required for missing exogenous variables (e.g., tariff, DER, market fields).
+- **Frontend** (`frontend/`): dashboards, run control, comparisons, resource views
+- **Backend API** (`backend/app/`): simulation, market, agent state, training APIs
+- **Training worker** (`backend/app/worker_daemon.py`, `rl/training/training_worker.py`): long jobs/checkpoints/evaluation
+- **Core engines** (`core/`): replay loop, market clearing, hierarchical agent logic
+- **Experiment outputs** (`experiments/outputs/`): metrics, checkpoints, logs, artifacts
 
-## Repository Structure
+## Repository Layout
 
 ```text
 hieraflex/
-  backend/           # FastAPI backend, services, runtime orchestration
-  frontend/          # React + Vite dashboards
-  core/              # Replay, market, agents, control, constraints
-  data/              # DEDDIAG adapters, preprocessing, schema models
-  rl/                # Envs, PPO and baseline agents, training/evaluation
-  experiments/       # Configs + outputs
-  deploy/            # Hugging Face + GitHub deployment assets
-  docs/              # Formulation, architecture, deployment, reproducibility
-  tests/             # Unit tests
+  backend/     FastAPI + services + websockets + training manager
+  frontend/    React/Vite live dashboards and control panels
+  core/        replay, market, agents, controllers, constraints
+  data/        DEDDIAG adapters, preprocessing, schemas
+  rl/          envs, PPO/baselines, training/evaluation
+  experiments/ configs and tracked outputs
+  deploy/      production + Hugging Face deployment assets
+  docs/        formulation, lifecycle, deployment, visualization docs
+  tests/       API, replay, market, RL env, deployment, training tests
 ```
 
-## Architecture Overview
+## Quick Start
 
-### Upper layer: Community
-- monitors total/flexible demand and congestion
-- computes fairness-aware coordination signal
-- coordinates local market clearing with residual grid settlement
-
-### Middle layer: House agents
-- observe prices, flexibility, deadlines, comfort slack, and community signal
-- reason about cost/flexibility/comfort/trade opportunity
-- plan short-horizon actions and re-plan online
-- produce explanation payloads for every decision
-
-### Lower layer: Appliance/resource controllers
-- enforce non-interruptibility, SOC bounds, and house-cap feasibility
-- accept/reject commands with safety feedback
-
-## Mathematical and RL Formulation
-
-Full research formulation is documented in:
-- `docs/notation.md`
-- `docs/problem_formulation.md`
-- `docs/mathematical_model.md`
-- `docs/rl_formulation.md`
-- `docs/market_design.md`
-
-Includes:
-- sets, indices, parameters, decision variables
-- household balance and scheduling constraints
-- battery/EV/PV models (toggleable)
-- local trading constraints and clearing model
-- community and house objectives
-- fairness formulations (variance and Jain index)
-- MDP definition, reward decomposition, and baseline rules
-
-## Installation
-
-Python: `3.10+` (recommended `3.11`)
-
+Python bootstrap:
 ```bash
 cd hieraflex
 python scripts/bootstrap.py
 ```
 
-On Windows, if your default `python` is older, bootstrap automatically uses `py -3.11` when available.
-
-Optional frontend:
-
+Frontend deps:
 ```bash
-python scripts/bootstrap.py --with-frontend
+cd frontend
+npm install
 ```
 
-Optional RL/Hugging Face extras:
-
+Run backend:
 ```bash
-python scripts/bootstrap.py --with-optional
-```
-
-Deterministic lock files: `requirements-lock.txt`, `requirements-lock-optional.txt`
-
-## Local Run
-
-Backend API:
-
-```bash
-cd hieraflex
 uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-Frontend:
-
+Run frontend:
 ```bash
-cd hieraflex/frontend
+cd frontend
 npm run dev
 ```
 
-Docker compose:
+## Live Website Deployment
 
+Local production-like stack:
 ```bash
-cd hieraflex
 docker compose up --build
 ```
 
-## Replay Mode
-
-Start replay:
-
+Production compose (nginx frontend + API + worker):
 ```bash
-curl -X POST http://localhost:8000/simulation/start \
-  -H "Content-Type: application/json" \
-  -d '{"scenario_id":"demo_week","start_index":0,"end_index":288,"replay_speed":60}'
+docker compose -f deploy/production/docker-compose.prod.yml up --build
 ```
 
-Control:
-- `POST /simulation/pause`
-- `POST /simulation/reset`
-- `POST /simulation/seek`
+Hugging Face Space / single-container demo UI is served from:
+- `GET /ui`
+
+## Long Training Workflows
+
+Start from API:
+```bash
+curl -X POST http://localhost:8000/training/start \
+  -H "Content-Type: application/json" \
+  -d "{\"algorithm\":\"ppo_single\",\"config_path\":\"experiments/configs/single_house.yaml\",\"scenario_id\":\"demo_week\",\"episodes\":500}"
+```
+
+Stop:
+```bash
+curl -X POST http://localhost:8000/training/stop \
+  -H "Content-Type: application/json" \
+  -d "{\"run_id\":\"<RUN_ID>\"}"
+```
+
+Resume:
+```bash
+curl -X POST http://localhost:8000/training/resume \
+  -H "Content-Type: application/json" \
+  -d "{\"run_id\":\"<RUN_ID>\",\"extra_episodes\":200}"
+```
+
+Optional worker daemon:
+```bash
+python -m backend.app.worker_daemon
+```
+
+## Training Monitoring and Comparison
+
+REST:
+- `GET /training/status`
+- `GET /training/runs`
+- `GET /training/runs/{run_id}`
+- `GET /training/runs/{run_id}/metrics`
+- `GET /training/runs/{run_id}/checkpoints`
+- `GET /training/runs/{run_id}/logs`
+- `POST /training/compare`
 
 WebSocket channels:
-- `/ws/community`
-- `/ws/houses`
-- `/ws/actions`
-- `/ws/trades`
-- `/ws/price`
-- `/ws/training` (reserved stream)
+- `/ws/training_status`
+- `/ws/training_metrics`
+- `/ws/checkpoint_updates`
 
-## API Summary
+## Resource Visualization
 
-- `GET /houses`
-- `GET /houses/{id}`
-- `GET /houses/{id}/agent-state`
-- `GET /appliances`
-- `GET /market/state`
-- `POST /simulation/start|pause|reset|seek`
-- `POST /training/start`
-- `GET /training/status`
-- `POST /evaluation/run`
-- `GET /results/summary`
-- `GET /results/export`
-- `GET /deployment/status`
+Hierarchy:
+- Community Live Dashboard
+- House Live Dashboard
+- Resource Dashboard
+- Appliance Detail View
 
-## Training and Evaluation
+Resource endpoint:
+- `GET /houses/{house_id}/resources?limit=240`
 
-Train single-house PPO:
+Signals include:
+- house load
+- appliance traces/states
+- price overlays
+- action context and replay-aligned demand dynamics
 
-```bash
-python -m rl.training.train_single_house --config experiments/configs/single_house.yaml
-```
+## Experiment Tracking Outputs
 
-Train shared multi-house PPO:
+Per run:
+- `experiments/outputs/json/runs/<run_id>/run.json`
+- `experiments/outputs/json/runs/<run_id>/metrics.jsonl`
+- `experiments/outputs/json/runs/<run_id>/checkpoints.jsonl`
+- `experiments/outputs/json/runs/<run_id>/evaluations.jsonl`
+- `experiments/outputs/json/runs/<run_id>/checkpoints/*.pt`
+- `experiments/outputs/json/runs/<run_id>/worker.log`
 
-```bash
-python -m rl.training.train_multi_house_shared_ppo --config experiments/configs/community.yaml
-```
+## Hugging Face Integration (Optional)
 
-Run baseline comparison:
+Hugging Face is for hosting/sharing/demo artifacts, not the hard control loop.
 
-```bash
-python -m rl.evaluation.compare_agents --config experiments/configs/community.yaml
-```
-
-Exports:
-- CSV: `experiments/outputs/csv/`
-- Parquet: `experiments/outputs/parquet/`
-- JSON summaries/logs: `experiments/outputs/logs/`
-
-## Frontend Views
-
-- **Community Overview**: demand, flexible load, trade volume, clearing price, fairness
-- **House Agent Detail**: action/state/reason per house
-- **Resource Layer**: mains/appliances/DER/grid-trade traces
-- **Appliance Explorer**: appliance-level characteristics and control context
-- **Training Dashboard**: training status and curves payload
-- **Evaluation Dashboard**: baseline vs PPO metrics
-- **Scenario Builder**: scenario and mode controls
-- **Explainability Panel**: decision reason and reward drivers
-
-## Hugging Face Integration
-
-Hugging Face is support-only (hosting/distribution/demo), not hard control loop.
-
-Environment variables (`.env`):
+Set `.env` vars:
 - `HF_TOKEN`
 - `HF_DATASET_REPO_ID`
 - `HF_MODEL_REPO_ID`
 - `HF_SPACE_REPO_ID`
 - `HF_USERNAME`
 
-Publish dataset/model/space:
-
+Publish artifacts:
 ```bash
 python deploy/huggingface/publish_dataset.py --source experiments/outputs/parquet
 python deploy/huggingface/publish_model.py --source experiments/outputs/models
+python deploy/huggingface/publish_results.py --source experiments/outputs/json
 python deploy/huggingface/publish_space.py --source deploy/huggingface
 ```
 
 One-shot sync:
-
 ```bash
 python deploy/huggingface/sync_to_hub.py
 ```
 
-If tokens are missing, scripts fail gracefully with actionable messages.
+## Deployment Modes
 
-## Testing
+- `local-dev`: fast iteration
+- `local-prod`: dockerized local website
+- `research-training`: long run execution with checkpointing
+- `public-demo`: replay/inference focused safe website mode
+
+## Tests
 
 ```bash
-cd hieraflex
 pytest -q
 ```
 
-Coverage includes data loading, replay engine, market engine, house agent loop, API routes, RL env, and deployment config checks.
+## Mathematical and RL Docs
 
-If you need to rebuild a clean environment, rerun:
-
-```bash
-python scripts/bootstrap.py
-```
-
-## Research Positioning
-
-HieraFlex is designed for:
-- reproducible demand response experiments
-- community trading and fairness studies
-- hierarchical multi-agent control research
-- deployment-ready demos with optional public artifact sharing
-
-It cleanly separates:
-- measured appliance traces
-- engineered features
-- simulated exogenous variables (e.g., synthetic tariff)
-- optimization/RL outputs
-- deployment artifacts
+- `docs/problem_formulation.md`
+- `docs/mathematical_model.md`
+- `docs/rl_formulation.md`
+- `docs/training_lifecycle.md`
+- `docs/deployment.md`
+- `docs/live_website_mode.md`
+- `docs/resource_visualization.md`
+- `docs/experiment_tracking.md`
