@@ -77,6 +77,23 @@ docker compose -f deploy/production/docker-compose.prod.yml up --build
 Hugging Face Space / single-container demo UI is served from:
 - `GET /ui`
 
+## Single Command Run (Windows, No Docker)
+
+If Docker is not installed, run HieraFlex with one command.
+
+Command Prompt (`cmd`):
+```cmd
+cd /d "C:\Users\masim\OneDrive\Desktop\EMS Online\HieraFlex\hieraflex" && cd frontend && npm.cmd run build -- --base /ui/ && cd .. && set "HIERAFLEX_SERVE_FRONTEND=1" && .\.venv\Scripts\python.exe -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000
+```
+
+PowerShell:
+```powershell
+Set-Location "C:\Users\masim\OneDrive\Desktop\EMS Online\HieraFlex\hieraflex"; Set-Location frontend; npm.cmd run build -- --base /ui/; Set-Location ..; $env:HIERAFLEX_SERVE_FRONTEND="1"; .\.venv\Scripts\python.exe -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000
+```
+
+Open:
+- `http://localhost:8000/ui/`
+
 ## Long Training Workflows
 
 Start from API:
