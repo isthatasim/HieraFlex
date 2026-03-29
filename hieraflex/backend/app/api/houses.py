@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from fastapi import APIRouter
 
@@ -42,3 +42,41 @@ def get_house_agent_state(house_id: str) -> dict:
         return {"house_id": house_id, "latest_action": "none", "price_trend": 0.0, "last_reward": 0.0}
     house = [h for h in recent[-1]["houses"] if h["house_id"] == house_id][0]
     return house.get("decision", {})
+
+
+@router.get("/{house_id}/resources")
+def get_house_resources(house_id: str, limit: int = 288) -> dict:
+    bundle = dataset_service.load_bundle()
+    trace = bundle.trace[bundle.trace["house_id"].astype(str) == str(house_id)].copy()
+    if trace.empty:
+        return {"house_id": house_id, "timeline": [], "appliances": []}
+
+    timeline = (
+        trace.groupby("timestamp", as_index=False)["power_kw"]
+        .sum()
+        .rename(columns={"power_kw": "house_total_kw"})
+        .sort_values("timestamp")
+    )
+    prices = bundle.prices.rename(columns={"grid_buy_price": "price"})[["timestamp", "price"]]
+    timeline = timeline.merge(prices, on="timestamp", how="left").tail(max(1, min(limit, 2000)))
+
+    appliance_rows = []
+    for appliance_id, group in trace.groupby("appliance_id"):
+        rows = (
+            group.sort_values("timestamp")[["timestamp", "power_kw", "state"]]
+            .tail(max(1, min(limit, 2000)))
+            .to_dict(orient="records")
+        )
+        appliance_rows.append(
+            {
+                "appliance_id": appliance_id,
+                "nominal_kw": float(group["power_kw"].quantile(0.9)),
+                "series": rows,
+            }
+        )
+
+    return {
+        "house_id": house_id,
+        "timeline": timeline.to_dict(orient="records"),
+        "appliances": sorted(appliance_rows, key=lambda x: x["appliance_id"]),
+    }
