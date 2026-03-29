@@ -21,7 +21,12 @@ export function useLiveChannel<T>(channel: string) {
 
       ws.onmessage = (ev) => {
         try {
-          setLatest(JSON.parse(ev.data) as T);
+          const payload = JSON.parse(ev.data) as Record<string, unknown>;
+          // Ignore websocket handshake acknowledgements from backend.
+          if (payload?.ok === true && payload?.channel === channel) {
+            return;
+          }
+          setLatest(payload as T);
         } catch {
           // ignore malformed payload
         }

@@ -155,9 +155,9 @@ export function AppShell() {
 
       <HouseAgentDetail decisions={decisions} />
       <ResourceLayer traces={[
-        { label: "Mains", value: community?.community.total_kw ?? 0 },
-        { label: "Flexible", value: community?.community.flexible_kw ?? 0 },
-        { label: "Grid Exchange", value: community?.market.matched_kwh ?? 0 },
+        { label: "Mains", value: community?.community?.total_kw ?? 0 },
+        { label: "Flexible", value: community?.community?.flexible_kw ?? 0 },
+        { label: "Grid Exchange", value: community?.market?.matched_kwh ?? 0 },
       ]} />
       <section className="panel">
         <h2>House Selector</h2>
